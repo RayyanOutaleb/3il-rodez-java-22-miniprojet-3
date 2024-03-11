@@ -26,7 +26,7 @@ public class PenduGame extends JFrame {
 
     private void initialiserPartie() {
         lettresProposees = new HashSet<>();
-        tentativesRestantes = 6;
+        tentativesRestantes = 10;
         partieTerminee = false;
         mettreAJourInterface();
     }
@@ -85,30 +85,27 @@ public class PenduGame extends JFrame {
         lettreField.setText("");
     }
 
-    private String getMotCache() {
+    private void mettreAJourInterface() {
         StringBuilder motCache = new StringBuilder();
+        int lettresCorrectes = 0;
         for (char c : motADeviner.toCharArray()) {
             if (lettresProposees.contains(c)) {
                 motCache.append(c);
+                lettresCorrectes++;
             } else {
                 motCache.append('_');
             }
             motCache.append(' ');
         }
-        return motCache.toString();
-    }
-
-    private void mettreAJourInterface() {
-        motCacheLabel.setText(getMotCache());
+        motCacheLabel.setText(motCache.toString());
         lettresProposeesLabel.setText("Lettres proposées : " + lettresProposees.toString());
         penduLabel.setText("Tentatives restantes : " + tentativesRestantes);
-        if (partieTerminee) {
-            if (motADeviner.equals(getMotCache())) {
+
+        if (!partieTerminee) {
+            if (lettresCorrectes == motADeviner.length()) {
+                partieTerminee = true;
                 JOptionPane.showMessageDialog(this, "Bravo ! Vous avez deviné le mot !");
-            } else {
-                JOptionPane.showMessageDialog(this, "Désolé, vous avez épuisé toutes vos tentatives. Le mot était : " + motADeviner);
             }
-            nouvellePartieButton.setEnabled(true);
         }
     }
 
