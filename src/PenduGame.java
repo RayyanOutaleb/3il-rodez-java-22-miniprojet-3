@@ -16,8 +16,10 @@ public class PenduGame extends JFrame {
     private JLabel definitionLabel; // Ajout du JLabel pour afficher la définition
     private JButton proposerLettreButton;
     private JButton nouvellePartieButton;
+    private JButton toggleValidationButton; // Bouton pour activer/désactiver la validation par Entrée
     private JTextField lettreField;
     private boolean partieTerminee;
+    private boolean validationParEntree; // Variable pour suivre l'état du mode de validation par Entrée
 
     private static final int FRAME_WIDTH = 600; // Largeur de la fenêtre
     private static final int FRAME_HEIGHT = 300; // Hauteur de la fenêtre
@@ -40,6 +42,7 @@ public class PenduGame extends JFrame {
         } else {
             definitionLabel.setText("Définition : Aucune");
         }
+        validationParEntree = true; // Par défaut, la validation par Entrée est activée
     }
 
     private void chargerMotAleatoire() {
@@ -81,6 +84,13 @@ public class PenduGame extends JFrame {
         lettresProposeesLabel = new JLabel();
         penduLabel = new JLabel();
         lettreField = new JTextField(1);
+        lettreField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (validationParEntree) {
+                    proposerLettre();
+                }
+            }
+        });
         proposerLettreButton = new JButton("Proposer");
         proposerLettreButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -92,6 +102,13 @@ public class PenduGame extends JFrame {
         nouvellePartieButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 relancerPartie();
+            }
+        });
+
+        toggleValidationButton = new JButton("Activer/Désactiver Validation Entrée");
+        toggleValidationButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                toggleValidationParEntree();
             }
         });
 
@@ -111,6 +128,7 @@ public class PenduGame extends JFrame {
         panelSouth.add(lettreField);
         panelSouth.add(proposerLettreButton);
         panelSouth.add(nouvellePartieButton);
+        panelSouth.add(toggleValidationButton); // Ajout du bouton de contrôle pour la validation par Entrée
 
         contentPane.add(panelNorth, BorderLayout.NORTH);
         contentPane.add(panelCenter, BorderLayout.CENTER);
@@ -188,6 +206,10 @@ public class PenduGame extends JFrame {
         chargerMotAleatoire(); // Appeler à nouveau pour choisir un nouveau mot
         initialiserPartie();
         nouvellePartieButton.setEnabled(false);
+    }
+
+    private void toggleValidationParEntree() {
+        validationParEntree = !validationParEntree; // Inverse l'état du mode de validation par Entrée
     }
 
     public static void main(String[] args) {
