@@ -1,4 +1,5 @@
 package src;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,14 +14,16 @@ public class PenduGame extends JFrame {
     private JLabel motCacheLabel;
     private JLabel lettresProposeesLabel;
     private JLabel penduLabel;
+    private JButton proposerLettreButton;
     private JButton nouvellePartieButton;
     private JTextField lettreField;
-    private JButton proposerLettreButton;
     private boolean partieTerminee;
+
+    private static final int FRAME_WIDTH = 600; // Largeur de la fenêtre
+    private static final int FRAME_HEIGHT = 300; // Hauteur de la fenêtre
 
     public PenduGame() {
         initialiserInterface();
-        chargerMotAleatoire();
         initialiserPartie();
     }
 
@@ -28,20 +31,41 @@ public class PenduGame extends JFrame {
         lettresProposees = new HashSet<>();
         tentativesRestantes = 10;
         partieTerminee = false;
-        mettreAJourInterface();
+        chargerMotAleatoire();
+        motCacheLabel.setText(getMotCache());
+        penduLabel.setText("Tentatives restantes : " + tentativesRestantes);
+        lettresProposeesLabel.setText("Lettres proposées : " + lettresProposees.toString());
+        if (definition != null && !definition.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Définition : " + definition);
+        }
     }
 
     private void chargerMotAleatoire() {
         try (Scanner scanner = new Scanner(new File("mots.txt"))) {
             ArrayList<String> mots = new ArrayList<>();
             while (scanner.hasNextLine()) {
-                mots.add(scanner.nextLine());
+                String line = scanner.nextLine();
+                String[] parts = line.split("\\s+", 2); // Sépare le mot à deviner et la définition
+                mots.add(parts[0].toUpperCase()); // Ajoute le mot à deviner en majuscules
             }
+            // Choix aléatoire d'un mot dans la liste
             Random random = new Random();
-            String motDef = mots.get(random.nextInt(mots.size()));
-            String[] parts = motDef.split(" ");
-            motADeviner = parts[0].toUpperCase();
-            definition = parts[1];
+            int index = random.nextInt(mots.size());
+            motADeviner = mots.get(index);
+            // Recherche de la définition correspondante
+            definition = ""; // Réinitialisation de la définition
+            try (Scanner scannerDef = new Scanner(new File("mots.txt"))) {
+                while (scannerDef.hasNextLine()) {
+                    String line = scannerDef.nextLine();
+                    if (line.toUpperCase().startsWith(motADeviner)) {
+                        String[] parts = line.split("\\s+", 2);
+                        definition = parts.length > 1 ? parts[1] : ""; // Récupère la définition s'il y en a une
+                        break;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -51,9 +75,9 @@ public class PenduGame extends JFrame {
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
 
-        motCacheLabel = new JLabel("");
-        lettresProposeesLabel = new JLabel("");
-        penduLabel = new JLabel("");
+        motCacheLabel = new JLabel();
+        lettresProposeesLabel = new JLabel();
+        penduLabel = new JLabel();
         lettreField = new JTextField(1);
         proposerLettreButton = new JButton("Proposer");
         proposerLettreButton.addActionListener(new ActionListener() {
@@ -61,52 +85,104 @@ public class PenduGame extends JFrame {
                 proposerLettre();
             }
         });
-        contentPane.add(motCacheLabel, BorderLayout.NORTH);
-        contentPane.add(lettresProposeesLabel, BorderLayout.CENTER);
-        contentPane.add(penduLabel, BorderLayout.SOUTH);
-        contentPane.add(lettreField, BorderLayout.WEST);
-        contentPane.add(proposerLettreButton, BorderLayout.EAST);
+
+        nouvellePartieButton = new JButton("Relancer une Partie");
+        nouvellePartieButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                relancerPartie();
+            }
+        });
+
+        JPanel panelNorth = new JPanel();
+        panelNorth.setLayout(new FlowLayout());
+        panelNorth.add(motCacheLabel);
+
+        JPanel panelCenter = new JPanel();
+        panelCenter.setLayout(new FlowLayout());
+        panelCenter.add(lettresProposeesLabel);
+
+        JPanel panelSouth = new JPanel();
+        panelSouth.setLayout(new FlowLayout());
+        panelSouth.add(penduLabel);
+        panelSouth.add(lettreField);
+        panelSouth.add(proposerLettreButton);
+        panelSouth.add(nouvellePartieButton);
+
+        contentPane.add(panelNorth, BorderLayout.NORTH);
+        contentPane.add(panelCenter, BorderLayout.CENTER);
+        contentPane.add(panelSouth, BorderLayout.SOUTH);
+
         setContentPane(contentPane);
         setTitle("Jeu du Pendu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack();
-        setLocationRelativeTo(null);
+        setSize(FRAME_WIDTH, FRAME_HEIGHT); // Définit la taille de la fenêtre
+        setLocationRelativeTo(null); // Centre la fenêtre sur l'écran
         setVisible(true);
     }
 
     private void proposerLettre() {
         String lettre = lettreField.getText().toUpperCase();
         if (lettre.length() == 1 && Character.isLetter(lettre.charAt(0))) {
-            lettresProposees.add(lettre.charAt(0));
-            mettreAJourInterface();
+            if (!lettresProposees.contains(lettre.charAt(0))) {
+                lettresProposees.add(lettre.charAt(0));
+                if (!motADeviner.contains(lettre)) {
+                    tentativesRestantes--;
+                }
+                mettreAJourInterface();
+            } else {
+                JOptionPane.showMessageDialog(this, "Cette lettre a déjà été proposée.");
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Veuillez entrer une lettre valide.");
         }
         lettreField.setText("");
     }
 
-    private void mettreAJourInterface() {
+    private String getMotCache() {
         StringBuilder motCache = new StringBuilder();
-        int lettresCorrectes = 0;
         for (char c : motADeviner.toCharArray()) {
             if (lettresProposees.contains(c)) {
                 motCache.append(c);
-                lettresCorrectes++;
             } else {
                 motCache.append('_');
             }
             motCache.append(' ');
         }
-        motCacheLabel.setText(motCache.toString());
+        return motCache.toString();
+    }
+
+    private boolean estMotDevine() {
+        for (char c : motADeviner.toCharArray()) {
+            if (!lettresProposees.contains(c)) {
+                return false; // S'il manque au moins une lettre, le mot n'est pas deviné
+            }
+        }
+        return true; // Toutes les lettres ont été trouvées, le mot est deviné
+    }
+
+    private void mettreAJourInterface() {
+        motCacheLabel.setText(getMotCache());
         lettresProposeesLabel.setText("Lettres proposées : " + lettresProposees.toString());
         penduLabel.setText("Tentatives restantes : " + tentativesRestantes);
 
-        if (!partieTerminee) {
-            if (lettresCorrectes == motADeviner.length()) {
-                partieTerminee = true;
+        if (tentativesRestantes <= 0 || estMotDevine()) {
+            partieTerminee = true;
+            if (estMotDevine()) {
                 JOptionPane.showMessageDialog(this, "Bravo ! Vous avez deviné le mot !");
+            } else {
+                JOptionPane.showMessageDialog(this, "Désolé, vous avez épuisé toutes vos tentatives. Le mot était : " + motADeviner);
             }
+            nouvellePartieButton.setEnabled(true);
         }
+    }
+
+    private void relancerPartie() {
+        partieTerminee = false;
+        lettresProposees.clear();
+        tentativesRestantes = 10;
+        chargerMotAleatoire();
+        initialiserPartie();
+        nouvellePartieButton.setEnabled(false);
     }
 
     public static void main(String[] args) {
