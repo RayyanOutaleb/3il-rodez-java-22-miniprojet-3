@@ -1,5 +1,4 @@
 package src;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,6 +13,7 @@ public class PenduGame extends JFrame {
     private JLabel motCacheLabel;
     private JLabel lettresProposeesLabel;
     private JLabel penduLabel;
+    private JLabel definitionLabel; // Ajout du JLabel pour afficher la définition
     private JButton proposerLettreButton;
     private JButton nouvellePartieButton;
     private JTextField lettreField;
@@ -36,7 +36,9 @@ public class PenduGame extends JFrame {
         penduLabel.setText("Tentatives restantes : " + tentativesRestantes);
         lettresProposeesLabel.setText("Lettres proposées : " + lettresProposees.toString());
         if (definition != null && !definition.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Définition : " + definition);
+            definitionLabel.setText("Définition : " + definition);
+        } else {
+            definitionLabel.setText("Définition : Aucune");
         }
     }
 
@@ -93,6 +95,8 @@ public class PenduGame extends JFrame {
             }
         });
 
+        definitionLabel = new JLabel("Définition : "); // Initialisation du JLabel pour la définition
+
         JPanel panelNorth = new JPanel();
         panelNorth.setLayout(new FlowLayout());
         panelNorth.add(motCacheLabel);
@@ -111,6 +115,7 @@ public class PenduGame extends JFrame {
         contentPane.add(panelNorth, BorderLayout.NORTH);
         contentPane.add(panelCenter, BorderLayout.CENTER);
         contentPane.add(panelSouth, BorderLayout.SOUTH);
+        contentPane.add(definitionLabel, BorderLayout.WEST); // Ajout du JLabel à gauche
 
         setContentPane(contentPane);
         setTitle("Jeu du Pendu");
@@ -180,7 +185,7 @@ public class PenduGame extends JFrame {
         partieTerminee = false;
         lettresProposees.clear();
         tentativesRestantes = 10;
-        chargerMotAleatoire();
+        chargerMotAleatoire(); // Appeler à nouveau pour choisir un nouveau mot
         initialiserPartie();
         nouvellePartieButton.setEnabled(false);
     }
