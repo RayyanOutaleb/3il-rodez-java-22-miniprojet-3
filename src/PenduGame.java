@@ -13,16 +13,16 @@ public class PenduGame extends JFrame {
     private JLabel motCacheLabel;
     private JLabel lettresProposeesLabel;
     private JLabel penduLabel;
-    private JLabel definitionLabel; // Ajout du JLabel pour afficher la définition
+    private JLabel definitionLabel;
     private JButton proposerLettreButton;
     private JButton nouvellePartieButton;
-    private JButton toggleValidationButton; // Bouton pour activer/désactiver la validation par Entrée
+    private JButton toggleValidationButton;
     private JTextField lettreField;
     private boolean partieTerminee;
-    private boolean validationParEntree; // Variable pour suivre l'état du mode de validation par Entrée
+    private boolean validationParEntree;
 
-    private static final int FRAME_WIDTH = 600; // Largeur de la fenêtre
-    private static final int FRAME_HEIGHT = 300; // Hauteur de la fenêtre
+    private static final int FRAME_WIDTH = 600;
+    private static final int FRAME_HEIGHT = 300;
 
     public PenduGame() {
         initialiserInterface();
@@ -42,7 +42,8 @@ public class PenduGame extends JFrame {
         } else {
             definitionLabel.setText("Définition : Aucune");
         }
-        validationParEntree = true; // Par défaut, la validation par Entrée est activée
+        validationParEntree = true;
+        lettreField.addKeyListener(new LettreKeyListener()); // Ajout de l'écouteur d'événements clavier
     }
 
     private void chargerMotAleatoire() {
@@ -50,21 +51,19 @@ public class PenduGame extends JFrame {
             ArrayList<String> mots = new ArrayList<>();
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String[] parts = line.split("\\s+", 2); // Sépare le mot à deviner et la définition
-                mots.add(parts[0].toUpperCase()); // Ajoute le mot à deviner en majuscules
+                String[] parts = line.split("\\s+", 2);
+                mots.add(parts[0].toUpperCase());
             }
-            // Choix aléatoire d'un mot dans la liste
             Random random = new Random();
             int index = random.nextInt(mots.size());
             motADeviner = mots.get(index);
-            // Recherche de la définition correspondante
-            definition = ""; // Réinitialisation de la définition
+            definition = "";
             try (Scanner scannerDef = new Scanner(new File("mots.txt"))) {
                 while (scannerDef.hasNextLine()) {
                     String line = scannerDef.nextLine();
                     if (line.toUpperCase().startsWith(motADeviner)) {
                         String[] parts = line.split("\\s+", 2);
-                        definition = parts.length > 1 ? parts[1] : ""; // Récupère la définition s'il y en a une
+                        definition = parts.length > 1 ? parts[1] : "";
                         break;
                     }
                 }
@@ -112,7 +111,7 @@ public class PenduGame extends JFrame {
             }
         });
 
-        definitionLabel = new JLabel("Définition : "); // Initialisation du JLabel pour la définition
+        definitionLabel = new JLabel("Définition : ");
 
         JPanel panelNorth = new JPanel();
         panelNorth.setLayout(new FlowLayout());
@@ -128,18 +127,18 @@ public class PenduGame extends JFrame {
         panelSouth.add(lettreField);
         panelSouth.add(proposerLettreButton);
         panelSouth.add(nouvellePartieButton);
-        panelSouth.add(toggleValidationButton); // Ajout du bouton de contrôle pour la validation par Entrée
+        panelSouth.add(toggleValidationButton);
 
         contentPane.add(panelNorth, BorderLayout.NORTH);
         contentPane.add(panelCenter, BorderLayout.CENTER);
         contentPane.add(panelSouth, BorderLayout.SOUTH);
-        contentPane.add(definitionLabel, BorderLayout.WEST); // Ajout du JLabel à gauche
+        contentPane.add(definitionLabel, BorderLayout.WEST);
 
         setContentPane(contentPane);
         setTitle("Jeu du Pendu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(FRAME_WIDTH, FRAME_HEIGHT); // Définit la taille de la fenêtre
-        setLocationRelativeTo(null); // Centre la fenêtre sur l'écran
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -177,10 +176,10 @@ public class PenduGame extends JFrame {
     private boolean estMotDevine() {
         for (char c : motADeviner.toCharArray()) {
             if (!lettresProposees.contains(c)) {
-                return false; // S'il manque au moins une lettre, le mot n'est pas deviné
+                return false;
             }
         }
-        return true; // Toutes les lettres ont été trouvées, le mot est deviné
+        return true;
     }
 
     private void mettreAJourInterface() {
@@ -203,13 +202,30 @@ public class PenduGame extends JFrame {
         partieTerminee = false;
         lettresProposees.clear();
         tentativesRestantes = 10;
-        chargerMotAleatoire(); // Appeler à nouveau pour choisir un nouveau mot
+        chargerMotAleatoire();
         initialiserPartie();
         nouvellePartieButton.setEnabled(false);
     }
 
     private void toggleValidationParEntree() {
-        validationParEntree = !validationParEntree; // Inverse l'état du mode de validation par Entrée
+        validationParEntree = !validationParEntree;
+    }
+
+    // Classe interne pour écouter les événements clavier
+    private class LettreKeyListener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent e) {}
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            char lettreTapee = Character.toUpperCase(e.getKeyChar());
+            if (Character.isLetter(lettreTapee)) {
+                proposerLettre();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {}
     }
 
     public static void main(String[] args) {
