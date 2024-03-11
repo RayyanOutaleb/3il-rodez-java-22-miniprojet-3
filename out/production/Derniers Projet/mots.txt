@@ -1,0 +1,58 @@
+agenda document que vous oubliez systématiquement de consulter jusqu'à la veille des examens
+agile processus de développement où tout est possible, sauf les délais
+algorithme solution élégante à un problème que personne n'a jamais rencontré
+apéro moment de détente crucial pour évacuer le stress accumulé
+bibliothèque lieu où vous allez pour étudier, mais où vous finissez souvent par socialiser
+boucle piège redoutable pour piéger les développeurs novices
+bug créature insaisissable qui hante chaque projet de développement
+bug erreur dans le code que personne n'a jamais commise
+café boisson magique qui fait fonctionner les programmeurs
+canard animal sacré et vénéré par une secte d'étudiants
+classe conteneur pour un ensemble complexe de bugs
+clavier outil de combat du développeur
+code énigme que seul le développeur peut résoudre
+commentaire seul endroit où le code fonctionne toujours comme prévu
+commit action courageuse de mettre en ligne du code non testé
+compilation processus où vos erreurs deviennent les erreurs du compilateur
+copie activité pratiquée lorsqu'on est en panique totale
+copier-coller méthode de programmation rapide et efficace
+deadline moment magique où tout commence à fonctionner
+débogage art subtil de faire fonctionner le code en essayant tout
+distraction activité qui semble toujours plus attrayante que de réviser
+documentation ensemble de pages que personne ne lit
+eclipse environnement de développement qui semble être en retard d'une décennie
+exception événement inattendu qui survient lorsque vous pensez que tout va bien
+fonction bloc de code conçu pour créer des bugs de manière organisée
+framework ensemble d'outils conçus pour rendre la vie du développeur plus compliquée
+git outil de gestion de code source qui peut parfois sembler magique
+groupe occasion parfaite pour découvrir que la procrastination est une compétence collective
+ide environnement de développement où les bugs se cachent dans les coins
+innovation dernière chose à laquelle vous pensez quand vous êtes en retard sur la deadline
+interface abstraction magique qui promet beaucoup et livre peu
+itération cycle sans fin de développement où chaque itération devient une nouvelle phase
+javadoc document de référence que personne ne prend le temps de générer
+java langage de programmation objet ennemi des débutants
+matinée tranquille moment où vous vous persuadez que vous avez encore le temps de tout faire
+maven outil de construction conçu pour rendre la vie des développeurs plus difficile
+modularité excuse utilisée pour justifier le manque de commentaires
+note saint graal que tout étudiant cherche désespérément à atteindre
+nuit période de 24 heures où le café devient votre meilleur ami
+objet unité de base du désordre dans la programmation orientée objet
+panne-de-réveil situation où votre réveil décide de faire grève au pire moment
+partiel moment où vous réalisez que vous n'avez rien révisé
+pause moment de répit nécessaire pour éviter l'effondrement mental
+polymorphisme concept qui rend le code plus élégant mais aussi plus difficile à comprendre
+portabilité qualité que personne ne teste jusqu'à ce que le programme ne fonctionne pas sur un autre système
+procrastination l'art de repousser les tâches jusqu'à la dernière minute
+projet chaos organisé par un groupe d'étudiants désespérés
+rattrapage dernière opportunité de sauver votre année
+refactoring activité pratiquée uniquement par les développeurs courageux
+régression retour en arrière inévitable après chaque mise à jour
+relecture activité souvent négligée qui révèle toutes vos erreurs juste avant de rendre votre devoir
+réunion événement où rien ne se passe mais tout le monde est présent
+révision activité que vous prévoyez de faire, mais qui se termine toujours par une sieste
+sécurité concept que personne ne prend au sérieux jusqu'à ce qu'il soit trop tard
+stackoverflow le saint graal des développeurs en détresse
+thread unité de base de la procrastination concurrentielle
+variable lieu de stockage temporaire pour vos espoirs et vos rêves
+versioning art de nommer les dossiers "final", "final_final" et "vraiment_le_dernier_final"
