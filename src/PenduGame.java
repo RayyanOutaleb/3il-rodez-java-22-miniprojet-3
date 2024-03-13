@@ -1,5 +1,4 @@
 package src;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -51,7 +50,7 @@ public class PenduGame extends JFrame {
         this.setVisible(true);
     }
 
-    private void initialiserPartie() {
+    void initialiserPartie() {
         this.lettresProposees = new HashSet<>();
         this.tentativesRestantes = 10;
         this.chargerMotAleatoire();
@@ -124,7 +123,7 @@ public class PenduGame extends JFrame {
         this.setFocusable(true);
     }
 
-    private void proposerLettre(String lettre) {
+    void proposerLettre(String lettre) {
         if (lettre.length() == 1 && Character.isLetter(lettre.charAt(0))) {
             char lettreProposee = lettre.toUpperCase().charAt(0);
             if (!this.lettresProposees.contains(lettreProposee)) {
@@ -139,7 +138,7 @@ public class PenduGame extends JFrame {
         }
     }
 
-    private String getMotCache() {
+    String getMotCache() {
         StringBuilder motCache = new StringBuilder();
         for (char c : this.motADeviner.toCharArray()) {
             if (this.lettresProposees.contains(c)) {
@@ -209,5 +208,27 @@ public class PenduGame extends JFrame {
 
         @Override
         public void keyReleased(KeyEvent e) {}
+    }
+
+    // Getters pour les tests unitaires
+    public String getMotADeviner() {
+        return motADeviner;
+    }
+
+    public String getDefinition() {
+        return definition;
+    }
+
+    public Set<Character> getLettresProposees() {
+        return lettresProposees;
+    }
+
+    public int getTentativesRestantes() {
+        return tentativesRestantes;
+    }
+
+    public static void main(String[] args) {
+        PenduGame jeu = new PenduGame();
+        jeu.initialiserJeu();
     }
 }
