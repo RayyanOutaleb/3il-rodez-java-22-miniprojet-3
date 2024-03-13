@@ -18,9 +18,10 @@ public class PenduGame extends JFrame {
     private JButton nouvellePartieButton;
     private JTextField lettreField;
     private boolean partieTerminee;
+    private JLabel imagePenduLabel; // JLabel pour afficher l'image du pendu
 
-    private static final int FRAME_WIDTH = 1000;
-    private static final int FRAME_HEIGHT = 400;
+    private static final int FRAME_WIDTH = 2000;
+    private static final int FRAME_HEIGHT = 1000;
 
     public PenduGame() {
         this.motCacheLabel = new JLabel();
@@ -28,6 +29,7 @@ public class PenduGame extends JFrame {
         this.penduLabel = new JLabel();
         this.lettreField = new JTextField(1);
         this.nouvellePartieButton = new JButton("Relancer une Partie");
+        this.imagePenduLabel = new JLabel(); // Initialisation du JLabel pour l'image du pendu
 
         this.nouvellePartieButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -113,6 +115,7 @@ public class PenduGame extends JFrame {
         contentPane.add(panelCenter, BorderLayout.CENTER);
         contentPane.add(panelSouth, BorderLayout.SOUTH);
         contentPane.add(this.definitionLabel, BorderLayout.WEST);
+        contentPane.add(this.imagePenduLabel, BorderLayout.EAST); // Ajout du JLabel pour l'image du pendu
 
         this.setContentPane(contentPane);
 
@@ -162,6 +165,14 @@ public class PenduGame extends JFrame {
         this.motCacheLabel.setText(this.getMotCache());
         this.lettresProposeesLabel.setText("Lettres proposées : " + this.lettresProposees.toString());
         this.penduLabel.setText("Tentatives restantes : " + this.tentativesRestantes);
+
+        // Chargement de l'image du pendu correspondant au nombre d'erreurs
+        int nombreErreurs = 10 - this.tentativesRestantes;
+        if (nombreErreurs >= 0 && nombreErreurs <= 10) {
+            String cheminImage = "images/pendu" + nombreErreurs + ".png";
+            ImageIcon imagePendu = new ImageIcon(cheminImage);
+            this.imagePenduLabel.setIcon(imagePendu);
+        }
 
         if (this.tentativesRestantes <= 0 || this.estMotDevine()) {
             this.partieTerminee = true;
