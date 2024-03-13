@@ -86,14 +86,14 @@ public class PenduGame extends JFrame {
         lettreField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (validationParEntree) {
-                    proposerLettre();
+                    proposerLettre(lettreField.getText()); // Appel de proposerLettre avec le texte du champ de texte
                 }
             }
         });
         proposerLettreButton = new JButton("Proposer");
         proposerLettreButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                proposerLettre();
+                proposerLettre(lettreField.getText()); // Appel de proposerLettre avec le texte du champ de texte
             }
         });
 
@@ -142,8 +142,7 @@ public class PenduGame extends JFrame {
         setVisible(true);
     }
 
-    private void proposerLettre() {
-        String lettre = lettreField.getText().toUpperCase();
+    private void proposerLettre(String lettre) {
         if (lettre.length() == 1 && Character.isLetter(lettre.charAt(0))) {
             if (!lettresProposees.contains(lettre.charAt(0))) {
                 lettresProposees.add(lettre.charAt(0));
@@ -220,7 +219,7 @@ public class PenduGame extends JFrame {
         public void keyPressed(KeyEvent e) {
             char lettreTapee = Character.toUpperCase(e.getKeyChar());
             if (Character.isLetter(lettreTapee)) {
-                proposerLettre();
+                proposerLettre(String.valueOf(lettreTapee)); // Appel de proposerLettre avec la lettre tapée
             }
         }
 
