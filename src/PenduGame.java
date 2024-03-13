@@ -1,4 +1,5 @@
 package src;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -18,26 +19,47 @@ public class PenduGame extends JFrame {
     private JTextField lettreField;
     private boolean partieTerminee;
 
-    private static final int FRAME_WIDTH = 600;
-    private static final int FRAME_HEIGHT = 300;
+    private static final int FRAME_WIDTH = 1000;
+    private static final int FRAME_HEIGHT = 400;
 
     public PenduGame() {
-        initialiserInterface();
-        initialiserPartie();
+        this.motCacheLabel = new JLabel();
+        this.lettresProposeesLabel = new JLabel();
+        this.penduLabel = new JLabel();
+        this.lettreField = new JTextField(1);
+        this.nouvellePartieButton = new JButton("Relancer une Partie");
+
+        this.nouvellePartieButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                relancerPartie();
+            }
+        });
+
+        this.definitionLabel = new JLabel("Définition : ");
+        this.partieTerminee = false;
+
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setLocationRelativeTo(null);
+    }
+
+    public void initialiserJeu() {
+        this.initialiserInterface();
+        this.initialiserPartie();
+        this.setVisible(true);
     }
 
     private void initialiserPartie() {
-        lettresProposees = new HashSet<>();
-        tentativesRestantes = 10;
-        partieTerminee = false;
-        chargerMotAleatoire();
-        motCacheLabel.setText(getMotCache());
-        penduLabel.setText("Tentatives restantes : " + tentativesRestantes);
-        lettresProposeesLabel.setText("Lettres proposées : " + lettresProposees.toString());
-        if (definition != null && !definition.isEmpty()) {
-            definitionLabel.setText("Définition : " + definition);
+        this.lettresProposees = new HashSet<>();
+        this.tentativesRestantes = 10;
+        this.chargerMotAleatoire();
+        this.motCacheLabel.setText(this.getMotCache());
+        this.penduLabel.setText("Tentatives restantes : " + this.tentativesRestantes);
+        this.lettresProposeesLabel.setText("Lettres proposées : " + this.lettresProposees.toString());
+        if (this.definition != null && !this.definition.isEmpty()) {
+            this.definitionLabel.setText("Définition : " + this.definition);
         } else {
-            definitionLabel.setText("Définition : Aucune");
+            this.definitionLabel.setText("Définition : Aucune");
         }
     }
 
@@ -51,14 +73,14 @@ public class PenduGame extends JFrame {
             }
             Random random = new Random();
             int index = random.nextInt(mots.size());
-            motADeviner = mots.get(index);
-            definition = "";
+            this.motADeviner = mots.get(index);
+            this.definition = "";
             try (Scanner scannerDef = new Scanner(new File("mots.txt"))) {
                 while (scannerDef.hasNextLine()) {
                     String line = scannerDef.nextLine();
-                    if (line.toUpperCase().startsWith(motADeviner)) {
+                    if (line.toUpperCase().startsWith(this.motADeviner)) {
                         String[] parts = line.split("\\s+", 2);
-                        definition = parts.length > 1 ? parts[1] : "";
+                        this.definition = parts.length > 1 ? parts[1] : "";
                         break;
                     }
                 }
@@ -74,59 +96,40 @@ public class PenduGame extends JFrame {
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
 
-        motCacheLabel = new JLabel();
-        lettresProposeesLabel = new JLabel();
-        penduLabel = new JLabel();
-        lettreField = new JTextField(1);
-        lettreField.setEditable(false); // Désactiver la zone de saisie
-        nouvellePartieButton = new JButton("Relancer une Partie");
-        nouvellePartieButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                relancerPartie();
-            }
-        });
-
-        definitionLabel = new JLabel("Définition : ");
-
         JPanel panelNorth = new JPanel();
         panelNorth.setLayout(new FlowLayout());
-        panelNorth.add(motCacheLabel);
+        panelNorth.add(this.motCacheLabel);
 
         JPanel panelCenter = new JPanel();
         panelCenter.setLayout(new FlowLayout());
-        panelCenter.add(lettresProposeesLabel);
+        panelCenter.add(this.lettresProposeesLabel);
 
         JPanel panelSouth = new JPanel();
         panelSouth.setLayout(new FlowLayout());
-        panelSouth.add(penduLabel);
-        panelSouth.add(nouvellePartieButton);
+        panelSouth.add(this.penduLabel);
+        panelSouth.add(this.nouvellePartieButton);
 
         contentPane.add(panelNorth, BorderLayout.NORTH);
         contentPane.add(panelCenter, BorderLayout.CENTER);
         contentPane.add(panelSouth, BorderLayout.SOUTH);
-        contentPane.add(definitionLabel, BorderLayout.WEST);
+        contentPane.add(this.definitionLabel, BorderLayout.WEST);
 
-        setContentPane(contentPane);
-        setTitle("Jeu du Pendu");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        this.setContentPane(contentPane);
 
         // Ajout de l'écouteur d'événements clavier à la fenêtre
-        addKeyListener(new LettreKeyListener());
-        setFocusable(true);
+        this.addKeyListener(new LettreKeyListener());
+        this.setFocusable(true);
     }
 
     private void proposerLettre(String lettre) {
         if (lettre.length() == 1 && Character.isLetter(lettre.charAt(0))) {
             char lettreProposee = lettre.toUpperCase().charAt(0);
-            if (!lettresProposees.contains(lettreProposee)) {
-                lettresProposees.add(lettreProposee);
-                if (!motADeviner.contains(String.valueOf(lettreProposee))) {
-                    tentativesRestantes--;
+            if (!this.lettresProposees.contains(lettreProposee)) {
+                this.lettresProposees.add(lettreProposee);
+                if (!this.motADeviner.contains(String.valueOf(lettreProposee))) {
+                    this.tentativesRestantes--;
                 }
-                mettreAJourInterface();
+                this.mettreAJourInterface();
             } else {
                 JOptionPane.showMessageDialog(this, "Cette lettre a déjà été proposée.");
             }
@@ -135,8 +138,8 @@ public class PenduGame extends JFrame {
 
     private String getMotCache() {
         StringBuilder motCache = new StringBuilder();
-        for (char c : motADeviner.toCharArray()) {
-            if (lettresProposees.contains(c)) {
+        for (char c : this.motADeviner.toCharArray()) {
+            if (this.lettresProposees.contains(c)) {
                 motCache.append(c);
             } else {
                 motCache.append('_');
@@ -147,8 +150,8 @@ public class PenduGame extends JFrame {
     }
 
     private boolean estMotDevine() {
-        for (char c : motADeviner.toCharArray()) {
-            if (!lettresProposees.contains(c)) {
+        for (char c : this.motADeviner.toCharArray()) {
+            if (!this.lettresProposees.contains(c)) {
                 return false;
             }
         }
@@ -156,28 +159,28 @@ public class PenduGame extends JFrame {
     }
 
     private void mettreAJourInterface() {
-        motCacheLabel.setText(getMotCache());
-        lettresProposeesLabel.setText("Lettres proposées : " + lettresProposees.toString());
-        penduLabel.setText("Tentatives restantes : " + tentativesRestantes);
+        this.motCacheLabel.setText(this.getMotCache());
+        this.lettresProposeesLabel.setText("Lettres proposées : " + this.lettresProposees.toString());
+        this.penduLabel.setText("Tentatives restantes : " + this.tentativesRestantes);
 
-        if (tentativesRestantes <= 0 || estMotDevine()) {
-            partieTerminee = true;
-            if (estMotDevine()) {
+        if (this.tentativesRestantes <= 0 || this.estMotDevine()) {
+            this.partieTerminee = true;
+            if (this.estMotDevine()) {
                 JOptionPane.showMessageDialog(this, "Bravo ! Vous avez deviné le mot !");
             } else {
-                JOptionPane.showMessageDialog(this, "Désolé, vous avez épuisé toutes vos tentatives. Le mot était : " + motADeviner);
+                JOptionPane.showMessageDialog(this, "Désolé, vous avez épuisé toutes vos tentatives. Le mot était : " + this.motADeviner);
             }
-            nouvellePartieButton.setEnabled(true);
+            this.nouvellePartieButton.setEnabled(true);
         }
     }
 
     private void relancerPartie() {
-        partieTerminee = false;
-        lettresProposees.clear();
-        tentativesRestantes = 10;
-        chargerMotAleatoire();
-        initialiserPartie();
-        nouvellePartieButton.setEnabled(false);
+        this.partieTerminee = false;
+        this.lettresProposees.clear();
+        this.tentativesRestantes = 10;
+        this.chargerMotAleatoire();
+        this.initialiserPartie();
+        this.nouvellePartieButton.setEnabled(false);
     }
 
     // Classe interne pour écouter les événements clavier
@@ -195,11 +198,5 @@ public class PenduGame extends JFrame {
 
         @Override
         public void keyReleased(KeyEvent e) {}
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new PenduGame();
-        });
     }
 }
