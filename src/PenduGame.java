@@ -14,12 +14,9 @@ public class PenduGame extends JFrame {
     private JLabel lettresProposeesLabel;
     private JLabel penduLabel;
     private JLabel definitionLabel;
-    private JButton proposerLettreButton;
     private JButton nouvellePartieButton;
-    private JButton toggleValidationButton;
     private JTextField lettreField;
     private boolean partieTerminee;
-    private boolean validationParEntree;
 
     private static final int FRAME_WIDTH = 600;
     private static final int FRAME_HEIGHT = 300;
@@ -42,8 +39,6 @@ public class PenduGame extends JFrame {
         } else {
             definitionLabel.setText("Définition : Aucune");
         }
-        validationParEntree = true;
-        lettreField.addKeyListener(new LettreKeyListener()); // Ajout de l'écouteur d'événements clavier
     }
 
     private void chargerMotAleatoire() {
@@ -83,31 +78,11 @@ public class PenduGame extends JFrame {
         lettresProposeesLabel = new JLabel();
         penduLabel = new JLabel();
         lettreField = new JTextField(1);
-        lettreField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (validationParEntree) {
-                    proposerLettre(lettreField.getText()); // Appel de proposerLettre avec le texte du champ de texte
-                }
-            }
-        });
-        proposerLettreButton = new JButton("Proposer");
-        proposerLettreButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                proposerLettre(lettreField.getText()); // Appel de proposerLettre avec le texte du champ de texte
-            }
-        });
-
+        lettreField.setEditable(false); // Désactiver la zone de saisie
         nouvellePartieButton = new JButton("Relancer une Partie");
         nouvellePartieButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 relancerPartie();
-            }
-        });
-
-        toggleValidationButton = new JButton("Activer/Désactiver Validation Entrée");
-        toggleValidationButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                toggleValidationParEntree();
             }
         });
 
@@ -124,10 +99,7 @@ public class PenduGame extends JFrame {
         JPanel panelSouth = new JPanel();
         panelSouth.setLayout(new FlowLayout());
         panelSouth.add(penduLabel);
-        panelSouth.add(lettreField);
-        panelSouth.add(proposerLettreButton);
         panelSouth.add(nouvellePartieButton);
-        panelSouth.add(toggleValidationButton);
 
         contentPane.add(panelNorth, BorderLayout.NORTH);
         contentPane.add(panelCenter, BorderLayout.CENTER);
@@ -140,23 +112,25 @@ public class PenduGame extends JFrame {
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        // Ajout de l'écouteur d'événements clavier à la fenêtre
+        addKeyListener(new LettreKeyListener());
+        setFocusable(true);
     }
 
     private void proposerLettre(String lettre) {
         if (lettre.length() == 1 && Character.isLetter(lettre.charAt(0))) {
-            if (!lettresProposees.contains(lettre.charAt(0))) {
-                lettresProposees.add(lettre.charAt(0));
-                if (!motADeviner.contains(lettre)) {
+            char lettreProposee = lettre.toUpperCase().charAt(0);
+            if (!lettresProposees.contains(lettreProposee)) {
+                lettresProposees.add(lettreProposee);
+                if (!motADeviner.contains(String.valueOf(lettreProposee))) {
                     tentativesRestantes--;
                 }
                 mettreAJourInterface();
             } else {
                 JOptionPane.showMessageDialog(this, "Cette lettre a déjà été proposée.");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Veuillez entrer une lettre valide.");
         }
-        lettreField.setText("");
     }
 
     private String getMotCache() {
@@ -204,10 +178,6 @@ public class PenduGame extends JFrame {
         chargerMotAleatoire();
         initialiserPartie();
         nouvellePartieButton.setEnabled(false);
-    }
-
-    private void toggleValidationParEntree() {
-        validationParEntree = !validationParEntree;
     }
 
     // Classe interne pour écouter les événements clavier
